@@ -1,0 +1,26 @@
+local players = game:GetService("Players")
+local dataStoreService = game:GetService("DataStoreService")
+local ds = dataStoreService:GetDataStore("MyDataStore")
+
+players.PlayerAdded:Connect(function(player)
+	for _, v in pairs(game.ServerStorage.PlrData:GetChildren()) do
+		v:Clone().Parent = player
+	end
+	local data
+	pcall(function ()
+		data = ds:GetAsync(player.UserId.."Wins")
+	end)
+	if data ~= bil then
+		player.leaderstats.Wins.Value = data
+	end
+end)
+
+players.PlayerRemoving:Connect(function(player)
+	pcall(function()
+		ds:SetAsync(player.UserId.."Wins",player.leaderstats.Wins.Value)
+	end)
+end)
+
+game:BindToClose(function()
+	wait(2)
+end)
